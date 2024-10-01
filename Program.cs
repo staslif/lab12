@@ -1,13 +1,47 @@
-Console.WriteLine("укажите путь"); //E:\\DOCUMENT\\12.txt
-string path = Console.ReadLine();
-string path1 = Directory.GetCurrentDirectory();
-if (File.Exists(path1))
+csharp
+using System;
+using System.Threading;
+
+class Program
 {
-string a = File.ReadAllText(path);
-File.WriteAllText(path1 + "\\12.txt", a);
-Console.WriteLine(path1 + "\\12.txt");
-}
-else
-{
-Console.WriteLine("ошибка");
+    private static readonly object lockObject = new object();
+    private static string lastWord = "";
+
+    static void Main(string[] args)
+    {
+        Thread chickenThread = new Thread(PrintChicken);
+        Thread eggThread = new Thread(PrintEgg);
+
+        chickenThread.Start();
+        eggThread.Start();
+
+        chickenThread.Join();
+        eggThread.Join();
+    }
+
+    private static void PrintChicken()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            lock (lockObject)
+            {
+                lastWord = "Курица";
+                Console.WriteLine(lastWord);
+                Thread.Sleep(100); // Задержка для наглядности
+            }
+        }
+    }
+
+    private static void PrintEgg()
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            lock (lockObject)
+            {
+                lastWord = "Яйцо";
+                Console.WriteLine(lastWord);
+                Thread.Sleep(100); // Задержка для наглядности
+            }
+        }
+    }
 }
